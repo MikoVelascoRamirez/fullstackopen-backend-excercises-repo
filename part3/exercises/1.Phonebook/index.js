@@ -49,6 +49,13 @@ const generateNewId = () => {
 
 app.post("/api/persons", (req, res) => {
   let body = req.body;
+
+  if(!body.name || !body.number){
+    return res.status(400).send({ 
+      "error" : "Contact info missing"
+    });
+  }
+
   dataSrc = [...dataSrc, { id: generateNewId(), ...body }]
   
   res.status(201).send({"message" : "contact created"});
@@ -60,7 +67,7 @@ app.get("/api/persons", (req, res) => {
 
 app.get("/info", (req, res) => {
   const template = `<p>Phonebook has info for ${dataSrc.length} people</p><p>${new Date().toString()}</p>`;
-  res.send(template).end();
+  res.send(template);
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -82,7 +89,7 @@ app.delete("/api/persons/:id", (req, res) => {
   
   dataSrc = phonebookUpdated;
 
-  res.status(204);
+  res.status(204).end();
 });
 
 app.listen(PORT, () => console.log(`server running at PORT ${PORT}`));
