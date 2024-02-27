@@ -29,24 +29,27 @@ let dataSrc = [
   },
 ];
 
-// Endpoints
-
-app.post("/api/persons", (req, res) => {
-  let body = req.body;
+// Functions
+const generateNewId = () => {
+  let idGenerated;
   while(true){
-    let idGenerated = Math.round(
+    idGenerated = Math.round(
       Math.random() * (1000 - dataSrc.length) + dataSrc.length
     );
     const findIfIdContactExists = dataSrc.some(
       contact => contact.id === idGenerated
     );
-    if(!findIfIdContactExists){
-      body = {...body, id: idGenerated}
-      break;
-    }
+    if(!findIfIdContactExists) break;
   }
 
-  dataSrc = [...dataSrc, body]
+  return idGenerated;
+}
+
+// Endpoints
+
+app.post("/api/persons", (req, res) => {
+  let body = req.body;
+  dataSrc = [...dataSrc, { id: generateNewId(), ...body }]
   
   res.status(201).send({"message" : "contact created"});
 });
