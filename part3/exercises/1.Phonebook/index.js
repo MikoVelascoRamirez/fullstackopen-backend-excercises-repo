@@ -4,7 +4,7 @@ const app = express();
 const PORT = 3001;
 
 // Source data
-const dataSrc = [
+let dataSrc = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -46,6 +46,18 @@ app.get("/api/persons/:id", (req, res) => {
     return res.status(404).send("The contact has not been found").end();
 
   res.json(contactFound).end();
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const param = Number(req.params.id);
+  const phonebookUpdated = dataSrc.filter(contact => contact.id !== param);
+
+  if(phonebookUpdated.length === dataSrc.length)
+    return res.status(404).send("The contact doesn't exist");
+  
+  dataSrc = phonebookUpdated;
+
+  res.status(204);
 });
 
 app.listen(PORT, () => console.log(`server running at PORT ${PORT}`));
