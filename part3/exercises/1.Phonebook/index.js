@@ -33,4 +33,9 @@ app.get("/api/persons", (req, res) => {
   res.json(dataSrc);
 });
 
-app.listen(PORT, () => console.log(`server running at PORT ${PORT}`))
+app.get("/info", (req, res) => {
+  const template = `<p>Phonebook has info for ${dataSrc.length} people</p><p>${new Date().toString()}</p>`;
+  res.send(template).end();
+});
+
+app.listen(PORT, () => console.log(`server running at PORT ${PORT}`));
