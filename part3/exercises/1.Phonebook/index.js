@@ -3,6 +3,8 @@ const app = express();
 
 const PORT = 3001;
 
+app.use(express.json());
+
 // Source data
 let dataSrc = [
   {
@@ -28,6 +30,26 @@ let dataSrc = [
 ];
 
 // Endpoints
+
+app.post("/api/persons", (req, res) => {
+  let body = req.body;
+  while(true){
+    let idGenerated = Math.round(
+      Math.random() * (1000 - dataSrc.length) + dataSrc.length
+    );
+    const findIfIdContactExists = dataSrc.some(
+      contact => contact.id === idGenerated
+    );
+    if(!findIfIdContactExists){
+      body = {...body, id: idGenerated}
+      break;
+    }
+  }
+
+  dataSrc = [...dataSrc, body]
+  
+  res.status(201).send({"message" : "contact created"});
+});
 
 app.get("/api/persons", (req, res) => {
   res.json(dataSrc);
