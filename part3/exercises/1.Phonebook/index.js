@@ -38,4 +38,14 @@ app.get("/info", (req, res) => {
   res.send(template).end();
 });
 
+app.get("/api/persons/:id", (req, res) => {
+  const param = Number(req.params.id);
+  const contactFound = dataSrc.find(contact => contact.id === param);
+
+  if(!contactFound) 
+    return res.status(404).send("The contact has not been found").end();
+
+  res.json(contactFound).end();
+});
+
 app.listen(PORT, () => console.log(`server running at PORT ${PORT}`));
