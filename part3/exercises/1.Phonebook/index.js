@@ -56,6 +56,20 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
+  const formattingName = body.name.split(' ').filter(c => c !== '').join(' ');
+
+  body.name = formattingName;
+
+  const isTheNameExists = dataSrc.some(
+    contact => contact.name === formattingName
+  )
+
+  if(isTheNameExists){
+    return res.status(400).send({ 
+      "error" : "The name already exists."
+    });
+  }
+
   dataSrc = [...dataSrc, { id: generateNewId(), ...body }]
   
   res.status(201).send({"message" : "contact created"});
