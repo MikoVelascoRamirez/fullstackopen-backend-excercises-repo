@@ -1,9 +1,17 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 
 const PORT = 3001;
 
 app.use(express.json());
+app.use(morgan('tiny'));
+
+morgan.token('data', function getHeaders(req) { 
+  return req.data;
+})
+
+const postLog = morgan(':method :url :status :res[content-length] - :response-time ms :data');
 
 // Source data
 let dataSrc = [
@@ -45,9 +53,15 @@ const generateNewId = () => {
   return idGenerated;
 }
 
+
+function assignContentType(req, res, next) {
+  req.data = JSON.stringify(req.body);
+  next();
+}
+
 // Endpoints
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", assignContentType, postLog, (req, res, next) => {
   let body = req.body;
 
   if(!body.name || !body.number){
